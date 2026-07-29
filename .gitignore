@@ -13,5 +13,6 @@ __pycache__/
 
 .chroma/
 chroma/
+chroma_db/
 
 *_SCRIPT.md
