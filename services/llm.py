@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 from typing import Generator
 
 from groq import APIConnectionError, Groq
@@ -52,25 +53,51 @@ def stream_answer(question: str, context: str) -> Generator[str, None, None]:
         },
     ]
 
-    try:
-        stream = _get_client().chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-            max_tokens=1024,
-            temperature=0.1,
-            stream=True,
-        )
-    except APIConnectionError:
-        logger.warning("Groq connection failed, recreating client and retrying once")
-        stream = _reset_client().chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-            max_tokens=1024,
-            temperature=0.1,
-            stream=True,
-        )
+    last_error: APIConnectionError | None = None
 
-    for chunk in stream:
-        token = chunk.choices[0].delta.content
-        if token:
-            yield token
+    # Retry streaming requests because transient network/proxy/TLS issues are common.
+    for attempt in range(1, 4):
+        try:
+            stream = _get_client().chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+                max_tokens=1024,
+                temperature=0.1,
+                stream=True,
+            )
+
+            for chunk in stream:
+                token = chunk.choices[0].delta.content
+                if token:
+                    yield token
+            return
+        except APIConnectionError as exc:
+            last_error = exc
+            logger.warning(
+                "Groq streaming connection failed (attempt %d/3). cause=%r",
+                attempt,
+                exc.__cause__,
+            )
+            _reset_client()
+            if attempt < 3:
+                time.sleep(attempt)
+
+    # Fall back to non-streaming completion when streaming repeatedly fails.
+    try:
+        logger.warning("Falling back to non-streaming Groq completion")
+        completion = _get_client().chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            max_tokens=1024,
+            temperature=0.1,
+            stream=False,
+        )
+        text = completion.choices[0].message.content
+        if text:
+            yield text
+            return
+    except APIConnectionError as exc:
+        logger.error("Groq non-streaming fallback failed. cause=%r", exc.__cause__)
+
+    if last_error is not None:
+        raise last_error

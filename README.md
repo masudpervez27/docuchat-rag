@@ -2,7 +2,6 @@
 
 > **Chat with any document - PDFs, Word files, CSVs, and plain text - with source citations on every answer.**
 
-![Docuchat UI](image.png)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit%20Cloud-FF4B4B?logo=streamlit)](https://your-app.streamlit.app)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)](https://python.org)
 [![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?logo=langchain)](https://langchain.com)

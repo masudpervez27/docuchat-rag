@@ -179,7 +179,15 @@ if prompt := st.chat_input("Ask a question about your documents…"):
             context = "\n\n---\n\n".join(r["content"] for r in results)
             sources = results
             logger.info("Streaming answer from %d retrieved sources", len(sources))
-            response = st.write_stream(stream_answer(prompt, context))
+            try:
+                response = st.write_stream(stream_answer(prompt, context))
+            except Exception:
+                logger.exception("Failed to get response from Groq for current chat question")
+                response = (
+                    "⚠️ Could not reach the Groq API right now. "
+                    "Please try again in a moment."
+                )
+                st.error(response)
 
         if show_sources and sources:
             with st.expander(f"📎 {len(sources)} source chunk(s)"):
