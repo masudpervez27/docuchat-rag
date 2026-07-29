@@ -4,7 +4,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from services.config import configure_runtime
+from services.config import configure_runtime, get_secret
 from services.ingestion import clear_all_documents, ingest_file
 from services.llm import stream_answer
 from services.vectorstore import similarity_search
@@ -29,6 +29,25 @@ def _configure_logging() -> logging.Logger:
 
 
 logger = _configure_logging()
+
+
+def _health_status() -> dict[str, tuple[bool, str]]:
+    groq_ok = bool(get_secret("GROQ_API_KEY"))
+    hf_ok = bool(get_secret("HF_TOKEN") or get_secret("HUGGINGFACEHUB_API_TOKEN"))
+
+    chroma_dir = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
+    chroma_path = Path(chroma_dir)
+    try:
+        chroma_path.mkdir(parents=True, exist_ok=True)
+        chroma_ok = os.access(chroma_path, os.W_OK)
+    except Exception:
+        chroma_ok = False
+
+    return {
+        "GROQ_API_KEY": (groq_ok, "Required for chat completions"),
+        "HF_TOKEN (optional)": (hf_ok, "Optional for authenticated HF downloads"),
+        "Vector store path writable": (chroma_ok, f"Path: {chroma_dir}"),
+    }
 
 # ── Page config ────────────────────────────────────────────────
 st.set_page_config(
@@ -116,6 +135,17 @@ with st.sidebar:
         st.caption("**Loaded files:**")
         for name in st.session_state.ingested_files:
             st.caption(f"• {name}")
+
+    st.divider()
+    with st.expander("Health Check", expanded=False):
+        health = _health_status()
+        for label, (ok, note) in health.items():
+            icon = "✅" if ok else "❌"
+            st.write(f"{icon} {label}")
+            st.caption(note)
+
+        if not health["GROQ_API_KEY"][0]:
+            st.warning("Missing GROQ_API_KEY. Add it in .env or Streamlit secrets.")
 
     st.divider()
     st.subheader("⚙️ Settings")
