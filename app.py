@@ -3,13 +3,13 @@ import os
 from pathlib import Path
 
 import streamlit as st
-from dotenv import load_dotenv
 
+from services.config import configure_runtime
 from services.ingestion import clear_all_documents, ingest_file
 from services.llm import stream_answer
 from services.vectorstore import similarity_search
 
-load_dotenv()
+configure_runtime()
 
 
 def _configure_logging() -> logging.Logger:

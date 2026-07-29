@@ -100,9 +100,13 @@ cd docuchat-rag
 # 2. Install dependencies with UV
 uv sync
 
-# 3. Set up environment variables
+# 3. Set up secrets for local development
 cp .env.example .env
 # Edit .env and add your GROQ_API_KEY
+
+# Optional alternative: copy the Streamlit secrets template instead
+copy .streamlit\secrets.toml.example .streamlit\secrets.toml
+# Then edit .streamlit/secrets.toml with your keys
 ```
 
 ### Run locally
@@ -136,13 +140,26 @@ docuchat-rag/
 
 ---
 
-## ⚙️ Environment Variables
+## ⚙️ Secrets and Environment Variables
+
+The app supports both local `.env` files and Streamlit secrets:
+
+- Local development: use either `.env` or `.streamlit/secrets.toml`
+- Streamlit Community Cloud: paste the contents of your local `secrets.toml` into **Advanced settings → Secrets** during deployment
+- Do not commit `.streamlit/secrets.toml`; the repo already ignores it
 
 | Variable | Required | Description |
 |---|---|---|
 | `GROQ_API_KEY` | ✅ | Groq API key - get one free at console.groq.com |
-| `HF_TOKEN` | ❌ | Only needed if you switch to HF Inference API for embeddings |
+| `HF_TOKEN` | ❌ | Optional Hugging Face token for authenticated model downloads |
 | `CHROMA_PERSIST_DIR` | ❌ | Override ChromaDB storage path (default: `./chroma_db`) |
+
+Example `.streamlit/secrets.toml`:
+
+```toml
+GROQ_API_KEY = "your-groq-api-key"
+HF_TOKEN = "your-huggingface-token"
+```
 
 ---
 
@@ -170,8 +187,10 @@ When you ask a question:
 1. Push this repo to GitHub.
 2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**.
 3. Select your repo, set `app.py` as the entry point.
-4. Add `GROQ_API_KEY` under **Secrets**.
+4. Copy the contents of your local `.streamlit/secrets.toml` into **Advanced settings → Secrets**.
 5. Click **Deploy** - done. Streamlit Cloud auto-detects `pyproject.toml` and runs `uv sync`.
+
+If local document processing fails on Windows while downloading the embedding model from Hugging Face, the app now configures Hugging Face to use Python's system-trust SSL context. If your machine still cannot verify the certificate chain, the remaining issue is outside the repo and your local certificate store needs to trust the issuing CA.
 
 ---
 

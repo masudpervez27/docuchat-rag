@@ -4,6 +4,8 @@ from typing import Generator
 
 from groq import Groq
 
+from .config import get_secret
+
 _client: Groq | None = None
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ def _get_client() -> Groq:
     global _client
     if _client is None:
         logger.info("Initializing Groq client for DocuChat")
-        _client = Groq(api_key=os.environ["GROQ_API_KEY"])
+        _client = Groq(api_key=get_secret("GROQ_API_KEY", required=True))
     return _client
 
 
