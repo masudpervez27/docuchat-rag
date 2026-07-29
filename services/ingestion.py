@@ -11,7 +11,7 @@ from langchain_community.document_loaders import (
     CSVLoader,
     UnstructuredMarkdownLoader,
 )
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
 from .vectorstore import add_documents, reset_vectorstore

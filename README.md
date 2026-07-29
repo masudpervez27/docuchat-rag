@@ -1,6 +1,6 @@
-# DocuChat — Multi-Format Document RAG Chatbot
+# DocuChat - Multi-Format Document RAG Chatbot
 
-> **Chat with any document — PDFs, Word files, CSVs, and plain text — with source citations on every answer.**
+> **Chat with any document - PDFs, Word files, CSVs, and plain text - with source citations on every answer.**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit%20Cloud-FF4B4B?logo=streamlit)](https://your-app.streamlit.app)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)](https://python.org)
@@ -26,13 +26,13 @@
 
 ## ✨ Features
 
-- **Multi-format ingestion** — PDF, DOCX, TXT, CSV, Markdown
-- **Semantic search** — BAAI/bge-small-en-v1.5 embeddings (outperforms OpenAI ada-002, runs locally for free)
-- **Streaming answers** — token-by-token output via Groq Llama-3.3-70b
-- **Source citations** — every answer links back to the exact document chunk with a relevance score
-- **Adjustable retrieval** — tune `k` (chunk count) and relevance threshold from the sidebar
-- **Persistent vector store** — ChromaDB persisted to disk; survives app restarts
-- **One-click deploy** — Streamlit Community Cloud with zero configuration
+- **Multi-format ingestion** - PDF, DOCX, TXT, CSV, Markdown
+- **Semantic search** - BAAI/bge-small-en-v1.5 embeddings (outperforms OpenAI ada-002, runs locally for free)
+- **Streaming answers** - token-by-token output via Groq Llama-3.3-70b
+- **Source citations** - every answer links back to the exact document chunk with a relevance score
+- **Adjustable retrieval** - tune `k` (chunk count) and relevance threshold from the sidebar
+- **Persistent vector store** - ChromaDB persisted to disk; survives app restarts
+- **One-click deploy** - Streamlit Community Cloud with zero configuration
 
 ---
 
@@ -119,7 +119,7 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ```
 docuchat-rag/
-├── app.py                  # Streamlit UI — upload, chat, citations
+├── app.py                  # Streamlit UI - upload, chat, citations
 ├── services/
 │   ├── __init__.py
 │   ├── embeddings.py       # HF BGE-small model (cached singleton)
@@ -140,7 +140,7 @@ docuchat-rag/
 
 | Variable | Required | Description |
 |---|---|---|
-| `GROQ_API_KEY` | ✅ | Groq API key — get one free at console.groq.com |
+| `GROQ_API_KEY` | ✅ | Groq API key - get one free at console.groq.com |
 | `HF_TOKEN` | ❌ | Only needed if you switch to HF Inference API for embeddings |
 | `CHROMA_PERSIST_DIR` | ❌ | Override ChromaDB storage path (default: `./chroma_db`) |
 
@@ -171,13 +171,13 @@ When you ask a question:
 2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**.
 3. Select your repo, set `app.py` as the entry point.
 4. Add `GROQ_API_KEY` under **Secrets**.
-5. Click **Deploy** — done. Streamlit Cloud auto-detects `pyproject.toml` and runs `uv sync`.
+5. Click **Deploy** - done. Streamlit Cloud auto-detects `pyproject.toml` and runs `uv sync`.
 
 ---
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
 ---
 
