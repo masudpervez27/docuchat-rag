@@ -1,0 +1,32 @@
+[project]
+name = "docuchat-rag"
+version = "0.1.0"
+description = "Multi-format document RAG chatbot with source citations — powered by LangChain, ChromaDB, HuggingFace BGE, and Groq Llama 3."
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.35",
+    "langchain>=0.3",
+    "langchain-community>=0.3",
+    "langchain-huggingface>=0.1",
+    "langchain-chroma>=0.1",
+    "langchain-groq>=0.1",
+    "chromadb>=0.5",
+    "groq>=0.9",
+    "sentence-transformers>=3.0",
+    "pypdf>=4.0",
+    "docx2txt>=0.8",
+    "unstructured>=0.14",
+    "python-dotenv>=1.0",
+    "torch>=2.2",          # CPU-only is fine; needed by sentence-transformers
+    "transformers>=4.40",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8",
+    "ruff>=0.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
